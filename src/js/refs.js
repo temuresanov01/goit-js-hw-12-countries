@@ -1,6 +1,4 @@
-export default function getRefs(){
-    return {
-        cardContainer: document.querySelector('.js-card-container'),
-        serchInput: document.querySelector('.input-country'),
-    };
-}
+export default {
+  container: document.querySelector(".container"),
+  input: document.querySelector(".input"),
+};

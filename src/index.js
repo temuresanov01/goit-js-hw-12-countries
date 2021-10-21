@@ -1,135 +1,59 @@
-import './sass/main.scss';
-    //templates
-import countriesCardTpl from './templates/countries-card.hbs';
-import listCountryTpl from './templates/countries-list.hbs';
+import countryCard from "./templates/country-card.hbs";
+import countryList from "./templates/country-list.hbs";
+import API from "./js/fetchCountries";
+import refs from "./js/refs";
+import { myNotice, myError } from "./js/pnotify";
 
-    //js folder
-import API from './js/fetch-api.js';
-import getRefs from'./js/refs.js';
+let debounce = require("lodash.debounce");
 
-    //pnotify
-import '@pnotify/core/dist/BrightTheme.css';
-import { info } from "@pnotify/core";
-import "@pnotify/core/dist/PNotify.css";
-import "@pnotify/core/dist/BrightTheme.css";
-import * as Confirm from "@pnotify/confirm";
-import "@pnotify/confirm/dist/PNotifyConfirm.css";
-import { SameValueZero } from 'es-abstract';
+refs.input.addEventListener("input", debounce(onInputChange, 1000));
 
-    //refs
-const refs = getRefs();
- 
-    //------------------------------------поиск по форме
-refs.serchInput.addEventListener('input', _.debounce(onInputSearch, 500));
+function onInputChange(evt) {
+  evt.preventDefault();
 
-function onInputSearch (event) {
-   event.preventDefault();
-
-    const input = event.target;
-    const searchCountry = input.value.toLowerCase();
-
-    if (searchCountry === '') {
-        refs.cardContainer.innerHTML = '';
-        return;  
-    }
-        
-    API.fetchCountriesByName(searchCountry)
-        .then(createCountries)
-        .catch(error => {
-            console.log(error);
-    })
-      
+  const searchQuery = evt.target.value;
+  API.fetchCountry(searchQuery).then(onCountrySearch).catch(onFetchError);
 }
 
-    //-----------------------------------запросы пользователя
-function createCountries(countries) {
-  refs.cardContainer.innerHTML = '';
-
-    if (countries.length > 1) {
-        if (countries.length <= 10) {
-            renderList(countries);
-        } else {
-            onError();
-        }
-    } else {
-        if (countries.length === undefined) {
-            onSerchError(countries);
-        }
-
-        
-        else {
-            renderCountries(countries);
-        }
-    }
-      
-}
-     
-    //---------------------------------ошибка поиска
-function onSerchError(value) {
-       
-        info({
-            title: "❌ Error",
-            text:
-                "Country was not found 🕵. Please, try again.",
-            modules: new Map([
-                [
-                    Confirm,
-                    {
-                        confirm: true,
-                        buttons: [
-                            {
-                                text: "Ok",
-                                primary: true,
-                                click: notice => {
-                                    notice.close();
-                                }
-                            }
-                        ]
-                    }
-                ]
-            ])
-        });
-    }
-
-// }
-    
-//--------------------------------specific query
-function onError() {
-     
-        info({
-            title: "❌ Error",
-            text: "Too many matches found. Please entry a more specific query!",     
-            modules: new Map([
-                [
-                    Confirm,
-                    {
-                        confirm: true,
-                        buttons: [
-                            {
-                                text: "Ok",
-                                primary: true,
-                                click: notice => {
-                                    notice.close();
-                                }
-                            }
-                        ]
-                    }
-                ]
-            ])
-        });
-    
-
-    }
-
-    //-------------------------функция для рендеринга стран
-function renderCountries(country) {
-        const markup = countriesCardTpl(country[0]);
-    refs.cardContainer.innerHTML = markup;
-    //createCountries();
+function onCountrySearch(country) {
+  onInputClear();
+  if (country.length === 1) {
+    return renderCountryCard(country);
+  } else if (country.length >= 2 && country.length <= 10) {
+    return renderCountryList(country);
+  } else if (country.length > 10) {
+    return myNotice();
+  } else {
+    return myError();
+  }
 }
 
-//--------------------------функция для рендеринга списка
-function renderList(country) {
-        const markup = listCountryTpl(country);
-    refs.cardContainer.insertAdjacentHTML('beforeend', markup)
+function renderCountryCard(country) {
+  const markup = countryCard(country);
+  refs.container.insertAdjacentHTML("beforeend", markup);
+}
+
+function renderCountryList(country) {
+  const markup = countryList(country);
+  refs.container.insertAdjacentHTML("beforeend", markup);
+
+  document
+    .querySelector(".countries-list")
+    .addEventListener("click", onCountryListClick);
+}
+
+function onFetchError(error) {
+  alert("Enter correct name of the country");
+}
+
+function onInputClear() {
+  refs.input.value = "";
+  refs.container.innerHTML = "";
+}
+
+function onCountryListClick(e) {
+  if (e.target.nodeName !== "LI") {
+    return;
+  }
+  API.fetchCountry(e.target.textContent).then(onCountrySearch);
 }
