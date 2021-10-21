@@ -22,19 +22,11 @@ body {
   display: block;
 }
 
-.body {
-  color: black;
-  font-family: Roboto, sans-serif;
-  letter-spacing: 0.03em;
-  font-size: 20px;
-  line-height: 1.5;
-}
-
 .input {
   box-sizing: border-box;
   width: 480px;
   border: 2px double #ffffff;
-  padding: 10px 20px 10px 70px;
+  padding: 10px 20px;
   display: inline-block;
   vertical-align: middle;
   height: 60px;
@@ -43,18 +35,43 @@ body {
   background: transparent;
   margin-bottom: 20px;
   font-size: 26px;
-  color: rgb(255, 255, 255);
+  color: #10eb10;
   outline: none;
+  text-align: center;
+  caret-color: forestgreen;
 }
 .input:focus {
   background: rgb(119, 87, 87);
 }
+::-webkit-input-placeholder {
+  color: red;
+  text-align: center;
+  margin: auto;
+}
+:-moz-placeholder {
+  color: red;
+  text-align: center;
+  margin: auto;
+}
+::-moz-placeholder {
+  color: red;
+  text-align: center;
+  margin: auto;
+}
+:-ms-input-placeholder {
+  color: red;
+  text-align: center;
+  margin: auto;
+}
 
 .countries-list {
-  border-radius: 5px;
-  box-shadow: 0px 4px 4px rgba(136, 117, 117, 0.15);
-  background-color: #e6e3e3;
-  width: 500px;
+  // margin: auto;
+  border: 2px double #ffffff;
+  border-radius: 35px;
+  background-color: rgb(119, 87, 87);
+  width: 480px;
+  padding: 10px 20px 10px 70px;
+  margin-right: auto;
 }
 
 .countries-list__item {
@@ -62,25 +79,23 @@ body {
   cursor: pointer;
 }
 .countries-list__item:hover {
-  color: #910e14;
+  color: #10eb10;
 }
 
 .wrapper {
-  width: 900px;
+  width: 480px;
   margin-left: auto;
-  margin-right: auto;
-  border: 2px solid #e6e3e3;
-  border-radius: 5px;
-  box-shadow: 0px 4px 4px rgba(136, 117, 117, 0.15);
-  background-color: white;
+  border: 2px double #ffffff;
+  border-radius: 35px;
+  background-color: rgb(119, 87, 87);
+  width: 480px;
+  padding: 10px 10px 10px 20px;
 }
 
 .card {
   display: flex;
   justify-content: space-around;
   flex-wrap: nowrap;
-  padding: 20px;
-  background-color: #e6e3e3;
 }
 
 .card__name {
@@ -102,6 +117,6 @@ body {
 
 .card__image {
   display: block;
-  width: 500px;
+  width: 250px;
   height: auto;
 }
